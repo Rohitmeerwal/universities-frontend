@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Search</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+  
+</head>
+<body class="container py-5">
+    <h1>Search Universities in India</h1>
+    <div class="container my-5">
+        <div class="form-container">
+            <form id="searchForm" class="d-flex flex-column align-items-center gap-3">
+                <input type="text" id="countryInput" class="form-control w-100" placeholder="Enter country (default: India)" />
+                <button type="submit" class="btn btn-primary w-100">Search</button>
+            </form>
+            <a href="favorites.html" class="btn btn-link mt-3 d-block text-center">See all favorites</a>
+        </div>
+    </div>
+    <div class="table-container">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>State/Province</th>
+                    <th>Website</th>
+                    <th>Favorite</th>
+                </tr>
+            </thead>
+            <tbody id="resultsTableBody"></tbody>
+        </table>
+    </div>
+
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const country = document.getElementById('countryInput').value || 'India';
+            const response = await fetch(`http://localhost:5000/api/universities?country=${country}`);
+            const universities = await response.json();
+            const tableBody = document.getElementById('resultsTableBody');
+            tableBody.innerHTML = '';
+
+            universities.forEach(university => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${university.name}</td>
+                    <td>${university['state-province'] || 'N/A'}</td>
+                    <td><a href="${university.web_pages[0]}" target="_blank">${university.web_pages[0]}</a></td>
+                    <td><button class="btn btn-sm btn-warning" onclick="saveFavorite('${university.name}', '${university['state-province']}', '${university.web_pages[0]}')">Favorite</button></td>
+                `;
+                tableBody.appendChild(row);
+            });
+        });
+
+        async function saveFavorite(name, stateProvince, webPage) {
+            const response = await fetch('http://localhost:5000/api/favorite', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, state_province: stateProvince, web_page: webPage })
+            });
+
+            if (response.ok) {
+                alert('Favorite saved!');
+            } else {
+                alert('Failed to save favorite.');
+            }
+        }
+    </script>
+</body>
+</html>

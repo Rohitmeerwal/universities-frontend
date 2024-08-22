@@ -1,0 +1,33 @@
+body {
+    background-color: #fff;
+    color: #000;
+}
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+.table-container {
+    display: flex;
+    justify-content: center;
+}
+.table {
+    width: 80%;
+    margin: 0 auto;
+    border: 1px solid #dee2e6;
+}
+th, td {
+    text-align: center;
+    padding: 12px;
+}
+.table thead th {
+    border-bottom: 2px solid #dee2e6;
+}
+.header-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.header-container a {
+    margin-left: 15px;
+}

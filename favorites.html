@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorite Universities</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style1.css">
+</head>
+<body class="container py-5">
+    <div class="header-container">
+        <h1 class="mb-0">Favorite Universities</h1>
+        <a href="index.html" class="btn btn-link">Search for the universities</a>
+    </div>
+    <div class="table-container">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>State/Province</th>
+                    <th>Website</th>
+                </tr>
+            </thead>
+            <tbody id="favoritesTableBody"></tbody>
+        </table>
+    </div>
+
+    <script>
+        async function loadFavorites() {
+            try {
+                const response = await fetch('http://localhost:5000/api/favorites');
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+                const favorites = data.favorite;
+                const tableBody = document.getElementById('favoritesTableBody');
+                tableBody.innerHTML = '';
+
+                favorites.forEach(favorite => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${favorite.name}</td>
+                        <td>${favorite.state_province || 'N/A'}</td>
+                        <td><a href="${favorite.web_page}" target="_blank">${favorite.web_page}</a></td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading favorites:', error);
+                alert('Failed to load favorites.');
+            }
+        }
+
+        window.onload = loadFavorites;
+    </script>
+</body>
+</html>
